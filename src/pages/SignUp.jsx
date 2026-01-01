@@ -4,17 +4,21 @@ import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
+import SubmitButton from "../components/SubmitButton";
 
 export default function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [username, SetuserName] = useState("");
+    const [loading , setLoading] = useState(false);
     const {login} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleSublit = async(e) =>{
         e.preventDefault();
+        setLoading(true);
         if(!email || !password || !username){
+            setLoading(false);
             return toast.error("Please fill all the fields");
         }
 
@@ -30,6 +34,8 @@ export default function SignUp() {
             console.log(error)
 
             toast.error(error.response?.data?.message || "Something went wrong");
+        }finally {
+            setLoading(false);
         }
     }
 
@@ -56,8 +62,9 @@ export default function SignUp() {
                 onChange={(e) => setPassword(e.target.value)} 
                 type="password" 
                 className="w-full max-w-80 h-15 px-4 py-6 border border-gray-400 rounded-sm outline-none focus:ring-1 focus:ring-violet-500 focus:border-gray-500"/>
-                
-                <button className="w-full max-w-80 h-15 text-center bg-violet-600 cursor-pointer hover:bg-violet-500 text-white font-semibold rounded-sm">Continue</button>
+                <SubmitButton loading={loading}>
+                  Continue
+                </SubmitButton>
             </form>
             <p className="text-center ">Already have an account? <span className="text-violet font-semibold text-violet-500 border-b-2 hover:text-violet-600 border-b-violet-500"><Link to={'/login'}>Log in</Link></span></p>
         </>

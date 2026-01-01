@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import API from "../api/axios";
 import toast from "react-hot-toast";
+import SubmitButton from "../components/SubmitButton";
 
 export default function NewPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,8 +21,10 @@ export default function NewPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if (!password || !confirmPassword) {
+      setLoading(false);
       return toast.error("Please fill all the fields");
     }
 
@@ -34,7 +38,10 @@ export default function NewPassword() {
       toast.success("Password reset successfully!");
     } catch (error) {
       console.error(error.response?.data || error.message);
-      toast.error(error.response?.data?.error || "Something went wrong");}
+      toast.error(error.response?.data?.error || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -59,7 +66,9 @@ export default function NewPassword() {
         onChange={(e) => setConfirmPassword(e.target.value)}
         className="w-full max-w-80 px-4 py-3 border border-gray-400 rounded-sm outline-none focus:ring-1 focus:ring-violet-500"
       />
-     <button className="w-full max-w-80 h-15 text-center bg-violet-600 cursor-pointer hover:bg-violet-500 text-white font-semibold rounded-sm">Continue</button>
+      <SubmitButton loading={loading}>
+        {loading ? "Resetting Password" : "Reset Password"}
+      </SubmitButton>
     </form>
   );
 }

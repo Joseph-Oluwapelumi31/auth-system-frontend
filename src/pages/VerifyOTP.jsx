@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import API from "../api/axios";
 import toast from "react-hot-toast";
+import SubmitButton from "../components/SubmitButton";
 
 export default function VerifyOTP() {
   const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -13,8 +15,10 @@ export default function VerifyOTP() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if (!otp) {
+      setLoading(false);
       return toast.error("Please enter the OTP");
     }
     try {
@@ -31,7 +35,10 @@ export default function VerifyOTP() {
     } catch (error) {
       console.error(error.response?.data || error.message);
 
-      toast.error(error.response?.data?.error || "Something went wrong");}
+      toast.error(error.response?.data?.error || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,8 +55,9 @@ export default function VerifyOTP() {
         onChange={(e) => setOtp(e.target.value)}
         className="w-full max-w-80 px-4 py-3 border border-gray-400 rounded-sm outline-none focus:ring-1 focus:ring-violet-500"
       />
-     <button className="w-full max-w-80 h-15 text-center bg-violet-600 cursor-pointer hover:bg-violet-500 text-white font-semibold rounded-sm">Continue</button>
-
+      <SubmitButton loading={loading}>
+        {loading ? "Verifying OTP" : "Verify OTP"}
+      </SubmitButton>
      
     </form>
   );

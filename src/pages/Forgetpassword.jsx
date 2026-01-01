@@ -2,13 +2,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import toast from "react-hot-toast";
+import SubmitButton from "../components/SubmitButton";
 
 
 export default function Forgetpassword() {
     const [email, setEmail] = useState("");
+    const [loading , setLoading] = useState(false);
+
     const navigate = useNavigate();
     const handlesubmit = async (e) =>{
         e.preventDefault();
+        setLoading(true);
+
         if(!email){
             return toast.error("Please enter your email");
         }
@@ -21,6 +26,8 @@ export default function Forgetpassword() {
         } catch (error) {
             console.log(error)
             toast.error(error.response?.data?.error || "Something went wrong");
+        }finally {
+            setLoading(false);
         }
         
 
@@ -36,7 +43,9 @@ export default function Forgetpassword() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full max-w-80 h-15 px-4 py-6 border border-gray-400 rounded-sm outline-none focus:ring-1 focus:ring-violet-500 focus:border-gray-500"/>
-                <button className="w-full max-w-80 h-15 text-center bg-violet-600 cursor-pointer hover:bg-violet-500 text-white font-semibold rounded-sm">Continue</button>
+                <SubmitButton loading={loading}>
+                  {loading ? "Sending OTP" : "Send OTP"}
+                </SubmitButton>
             </form>
         </>
     )
