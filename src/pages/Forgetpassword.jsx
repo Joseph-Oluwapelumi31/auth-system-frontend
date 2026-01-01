@@ -13,7 +13,7 @@ export default function Forgetpassword() {
             return toast.error("Please enter your email");
         }
         try {
-            const res = await API.post("/auth/forgot-password", {email})
+            const res = await API.post("/auth/forgotpassword", {email})
             console.log(res.data);
             // await Promise.resolve();
             navigate("/verify-otp", {state: { email}});
