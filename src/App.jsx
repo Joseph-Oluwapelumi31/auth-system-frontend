@@ -8,7 +8,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import Navbar from './components/Navbar.jsx'
 import ProtectedRoute from './components/Protectedroute.jsx'
 import Forgetpassword from './pages/Forgetpassword.jsx'
-import Newpassword from './pages/Newpassword.jsx'
+import NewPassword from './pages/NewPassword.jsx'
 import Verifyotp from './pages/Verifyotp.jsx'
 import Home from './pages/Home.jsx'
 
@@ -24,7 +24,7 @@ function App() {
           <Route path='/signup' element={<SignUp/>} />
           <Route path='/forgot-password' element={<Forgetpassword/>} />
           <Route path='/verify-otp' element={<Verifyotp/>} />
-          <Route path='/new-password' element={<Newpassword/>} />
+          <Route path='/new-password' element={<NewPassword/>} />
           <Route path='/dashboard' element={
             <ProtectedRoute>
               <Dashboard/>
