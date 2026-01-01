@@ -9,7 +9,7 @@ import Navbar from './components/Navbar.jsx'
 import ProtectedRoute from './components/Protectedroute.jsx'
 import Forgetpassword from './pages/Forgetpassword.jsx'
 import NewPassword from './pages/NewPassword.jsx'
-import Verifyotp from './pages/Verifyotp.jsx'
+import Verifyotp from './pages/VerifyOTP.jsx'
 import Home from './pages/Home.jsx'
 
 
