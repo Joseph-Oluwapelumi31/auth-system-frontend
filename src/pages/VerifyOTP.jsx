@@ -3,24 +3,35 @@ import { useNavigate, useLocation } from "react-router-dom";
 import API from "../api/axios";
 import toast from "react-hot-toast";
 import SubmitButton from "../components/SubmitButton";
+import InputField from "../components/InputField";
 
 export default function VerifyOTP() {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error , setError] = useState({otp: false});
   const navigate = useNavigate();
   const location = useLocation();
 
   // get email from previous page
   const email = location.state?.email;
 
+  const handleChange = (field, setter) => (e) => {
+      setter(e.target.value);
+      setError((prev) => ({ ...prev, [field]: false }));
+    };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    if (!otp) {
-      setLoading(false);
-      return toast.error("Please enter the OTP");
-    }
+    const newError = {otp: !otp};
+        setError(newError);
+        if(newError.otp){
+          setLoading(false);
+          return toast.error("Please fill all the fields");
+        } 
+
+    
     try {
       const res = await API.post("/auth/verify-otp", {
         email,
@@ -47,14 +58,14 @@ export default function VerifyOTP() {
       className="flex flex-col p-4 items-center justify-center gap-4"
     >
       <h1 className="font-semibold mb-4 text-xl">Verify OTP</h1>
-
-      <input
-        placeholder="Enter OTP"
+      <InputField 
         type="text"
+        placeholder="Enter OTP"
         value={otp}
-        onChange={(e) => setOtp(e.target.value)}
-        className="w-full max-w-80 px-4 py-3 border border-gray-400 rounded-sm outline-none focus:ring-1 focus:ring-violet-500"
+        onChange={handleChange("otp", setOtp)}
+        error={error.otp}
       />
+      
       <SubmitButton loading={loading}>
         {loading ? "Verifying OTP" : "Verify OTP"}
       </SubmitButton>
