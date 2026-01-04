@@ -73,7 +73,6 @@ export default function NewPassword() {
         onChange={handleChange("confirmPassword", setConfirmPassword)}
         error={errors.confirmPassword}
       />
-
       <SubmitButton loading={loading}>
         {loading ? "Resetting Password" : "Reset Password"}
       </SubmitButton>
