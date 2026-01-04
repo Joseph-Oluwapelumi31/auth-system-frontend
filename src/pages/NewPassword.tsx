@@ -5,12 +5,18 @@ import toast from "react-hot-toast";
 import SubmitButton from "../components/SubmitButton";
 import InputField from "../components/InputField";
 import PasswordInput from "../components/PasswordInput";
+import { handleApiError } from "../utils/handleApiError";
+
+interface NewPasswordErrors {
+    password: boolean;
+    confirmPassword: boolean;
+}
 
 export default function NewPassword() {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({ password: false, confirmPassword: false });
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<NewPasswordErrors>({ password: false, confirmPassword: false });
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -27,7 +33,7 @@ export default function NewPassword() {
       setter(e.target.value);
       setErrors((prev) => ({ ...prev, [field]: false }));
     };
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     const newErrors = {confirmPassword: !confirmPassword , password: !password};
@@ -48,8 +54,7 @@ export default function NewPassword() {
       navigate("/login");
       toast.success("Password reset successfully!");
     } catch (error) {
-      console.error(error.response?.data || error.message);
-      toast.error(error.response?.data?.error || "Something went wrong");
+      handleApiError(error, "Failed to reset password");
     } finally {
       setLoading(false);
     }

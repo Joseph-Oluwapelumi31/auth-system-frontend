@@ -7,21 +7,32 @@ import toast from "react-hot-toast";
 import SubmitButton from "../components/SubmitButton";
 import InputField from "../components/InputField";
 import PasswordInput from "../components/PasswordInput";
+import { User } from "../types/user";
+import { handleApiError } from "../utils/handleApiError";
+import { LoginSignUpResponse } from "../types/SignupLoginresponse";
+
+interface errorState {
+    email: boolean;
+    password: boolean;
+    username: boolean;
+}
+
+
 
 export default function SignUp() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [username, SetuserName] = useState("");
-    const [loading , setLoading] = useState(false);
-    const [errors , setErrors] = useState({email: false , password: false, username: false});
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [username, SetuserName] = useState<string>("");
+    const [loading , setLoading] = useState<boolean>(false);
+    const [errors , setErrors] = useState<errorState>({email: false , password: false, username: false});
     const {login} = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const handleChange = (field, setter) => (e) => {
+    const handleChange = (field: keyof errorState, setter: React.Dispatch<React.SetStateAction<string>> ) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setter(e.target.value);
       setErrors((prev) => ({ ...prev, [field]: false }));
     };
-    const handleSubmit = async(e) =>{
+    const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
         setLoading(true);
         const newErrors = {email: !email , password: !password, username: !username};
@@ -34,16 +45,14 @@ export default function SignUp() {
 
         // Signup logic to be implemented
         try {
-            const res = await API.post("/auth/signup", {username, email, password})
+            const res = await API.post<LoginSignUpResponse>("/auth/signup", {username, email, password})
             
             login(res.data.user);
             localStorage.setItem("token", res.data.token);
             navigate("/dashboard");
             toast.success("Signup successful");
-        } catch (error) {
-            console.log(error)
-
-            toast.error(error.response?.data?.message || "Something went wrong");
+        } catch (error: unknown) {
+            handleApiError(error);
         }finally {
             setLoading(false);
         }

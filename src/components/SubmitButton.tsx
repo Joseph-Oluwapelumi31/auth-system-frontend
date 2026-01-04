@@ -1,4 +1,4 @@
-import Dots from "./Dots.jsx";
+import Dots from "./Dots.js";
 
 function SubmitButton({ loading, children }) {
   return (

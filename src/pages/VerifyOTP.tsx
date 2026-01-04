@@ -4,11 +4,22 @@ import API from "../api/axios";
 import toast from "react-hot-toast";
 import SubmitButton from "../components/SubmitButton";
 import InputField from "../components/InputField";
+import { AxiosError } from "axios";
+import { handleApiError } from "../utils/handleApiError";
+
+interface OTPErrorState {
+    otp: boolean;
+}
+
+interface VerifyOTPResponse {
+    message: string;
+    success: boolean;
+}
 
 export default function VerifyOTP() {
-  const [otp, setOtp] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error , setError] = useState({otp: false});
+  const [otp, setOtp] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error , setError] = useState<OTPErrorState>({otp: false});
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,7 +31,7 @@ export default function VerifyOTP() {
       setError((prev) => ({ ...prev, [field]: false }));
     };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -33,7 +44,7 @@ export default function VerifyOTP() {
 
     
     try {
-      const res = await API.post("/auth/verify-otp", {
+      const res = await API.post<VerifyOTPResponse>("/auth/verify-otp", {
         email,
         otp,
       });
@@ -43,10 +54,8 @@ export default function VerifyOTP() {
       // move to reset password page
       navigate("/new-password", { state: { email } });
       toast.success("OTP verified successfully");
-    } catch (error) {
-      console.error(error.response?.data || error.message);
-
-      toast.error(error.response?.data?.error || "Something went wrong");
+    } catch (err: unknown) {
+      handleApiError(err, "Failed to verify OTP");
     } finally {
       setLoading(false);
     }

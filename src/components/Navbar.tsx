@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
 
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const {user, logout} = useContext(AuthContext);
     const navigate = useNavigate();
 

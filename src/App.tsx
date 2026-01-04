@@ -1,16 +1,14 @@
-import './App.css'
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
 import {Toaster} from 'react-hot-toast'
-import SignUp from './pages/SignUp.jsx'
-import LogIn from   './pages/LogIn.jsx'
-
-import Dashboard from './pages/Dashboard.jsx'
-import Navbar from './components/Navbar.jsx'
-import ProtectedRoute from './components/Protectedroute.jsx'
-import Forgetpassword from './pages/Forgetpassword.jsx'
-import NewPassword from './pages/NewPassword.jsx'
-import Verifyotp from './pages/VerifyOTP.jsx'
-import Home from './pages/Home.jsx'
+import SignUp from './pages/SignUp'
+import LogIn from   './pages/LogIn'
+import Dashboard from './pages/Dashboard'
+import Navbar from './components/Navbar'
+import ProtectedRoute from './components/Protectedroute'
+import Forgetpassword from './pages/Forgetpassword'
+import NewPassword from './pages/NewPassword'
+import Verifyotp from './pages/VerifyOTP'
+import Home from './pages/Home'
 
 
 function App() {

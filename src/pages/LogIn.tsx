@@ -7,23 +7,30 @@ import toast from "react-hot-toast";
 import SubmitButton from "../components/SubmitButton";
 import InputField from "../components/InputField";
 import PasswordInput from "../components/PasswordInput";
+import { handleApiError } from "../utils/handleApiError";
+import {LoginSignUpResponse} from "../types/SignupLoginresponse"  
+
+interface errorState {
+    email: boolean;
+    password: boolean;
+}
 
 export default function Login() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [errors , setErrors] = useState({email: false , password: false});
-    const [loading , setLoading] = useState(false);
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [errors , setErrors] = useState<errorState>({email: false , password: false});
+    const [loading , setLoading] = useState<boolean>(false);
     const {login} = useContext(AuthContext);
 
     const navigate = useNavigate();
 
-    const handleChange = (field, setter) => (e) => {
+    const handleChange = (field: keyof errorState, setter: React.Dispatch<React.SetStateAction<string>> ) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setter(e.target.value);
       setErrors((prev) => ({ ...prev, [field]: false }));
     };
 
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
 
         e.preventDefault();
         setLoading(true);
@@ -35,7 +42,7 @@ export default function Login() {
         } 
 
         try {
-          const res= await API.post("/auth/login", {email, password})
+          const res= await API.post<LoginSignUpResponse>("/auth/login", {email, password})
 
           login(res.data.user);           
 
@@ -43,8 +50,7 @@ export default function Login() {
           navigate("/dashboard");
 
         } catch (error) {
-          console.log(error)
-          toast.error(error.response?.data?.error || "Something went wrong");
+            handleApiError(error, "Login failed");
         }finally {
           setLoading(false);
         }

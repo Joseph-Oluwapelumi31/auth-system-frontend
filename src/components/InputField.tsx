@@ -1,4 +1,12 @@
-function InputField({error,value, ...props}) {
+import { InputHTMLAttributes } from "react";
+
+interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+  error?: boolean;
+}
+
+
+
+function InputField({error,value, ...props}: InputFieldProps) {
     return(
         <input 
         value={value}

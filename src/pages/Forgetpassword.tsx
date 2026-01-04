@@ -4,21 +4,25 @@ import API from "../api/axios";
 import toast from "react-hot-toast";
 import SubmitButton from "../components/SubmitButton";
 import InputField from "../components/InputField";
+import { handleApiError } from "../utils/handleApiError";
 
+interface errorType {
+    email: boolean;
+}
 
 export default function Forgetpassword() {
-    const [email, setEmail] = useState("");
-    const [loading , setLoading] = useState(false);
-    const [error , setError] = useState({email: false});
+    const [email, setEmail] = useState<string>("");
+    const [loading , setLoading] = useState<boolean>(false);
+    const [error , setError] = useState<errorType>({email: false});
 
     const navigate = useNavigate();
 
-    const handleChange = (field, setter) => (e) => {
+    const handleChange = (field: keyof errorType, setter: React.Dispatch<React.SetStateAction<string>> ) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setter(e.target.value);
       setError((prev) => ({ ...prev, [field]: false }));
     };
 
-    const handlesubmit = async (e) =>{
+    const handlesubmit = async (e:React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
         setLoading(true);
         const newError = {email: !email};
@@ -32,12 +36,10 @@ export default function Forgetpassword() {
         try {
             const res = await API.post("/auth/forgotpassword", {email})
             console.log(res.data);
-            // await Promise.resolve();
             navigate("/verify-otp", {state: { email}});
             toast.success("OTP sent to your email");
-        } catch (error) {
-            console.log(error)
-            toast.error(error.response?.data?.error || "Something went wrong");
+        } catch (error:unknown) {
+            handleApiError(error, 'Forgot Password Error');
         }finally {
             setLoading(false);
         }

@@ -1,14 +1,28 @@
 import { createContext, useState} from "react";
+import { User } from "../types/user";
 
-export const AuthContext = createContext(null);
+interface AuthContextType {
+    user: User | null;
+    login: (userData: User) => void;
+    logout: () => void;
+}
 
-export const AuthProvider = ({ children }) => {
+export const AuthContext = createContext<AuthContextType>({
+  user: null,
+  login: () => {},
+  logout: () => {},
+});
+
+interface AuthProviderProps {
+  children: React.ReactNode;
+}
+export const AuthProvider = ({ children } : AuthProviderProps) => {
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
-  const login = (userData) => {
+  const login = (userData:User) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
   };
